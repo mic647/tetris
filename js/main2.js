@@ -20,6 +20,7 @@ var isOn = false;
 var speed = 1000;
 var gStartTime;
 var gTime;
+var boxShadow = '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)';
 var I;
 var O;
 var T;
@@ -61,6 +62,7 @@ function startGame() {
 }
 
 function levelGame(elBtn) {
+    if (isOn) return;
     if (elBtn.innerText === 'Level 1') speed = 1000;
     if (elBtn.innerText === 'Level 2') speed = 600;
     if (elBtn.innerText === 'Level 3') speed = 300;
@@ -162,7 +164,6 @@ function createNextShape() {
         indexes: []
     }
     setNextIndexes()
-    console.log(nextShape);
 }
 
 function setNextIndexes() {
@@ -174,6 +175,7 @@ function setNextIndexes() {
             }
         }
     }
+    console.log(nextShape);
     renderNextCell(nextShape.color, '.cellNext')
 }
 
@@ -204,7 +206,7 @@ function setIndexes() {
         }
     }
 
-    renderCell(currentShape.color, '.cell')
+    renderCell(currentShape.color, '.cell', boxShadow)
 }
 
 function movePiece() {
@@ -217,33 +219,33 @@ function movePiece() {
     }
     if (direction === 'down') {
         for (var i = 0; i < currIdx.length; i++) {
-            renderCell('lightcoral', '.cell');
+            renderCell('lightcoral', '.cell', 'none');
             currIdx[i].i++;
         }
     }
     if (direction === 'left') {
         for (var i = 0; i < currIdx.length; i++) {
-            renderCell('lightcoral', '.cell');
+            renderCell('lightcoral', '.cell', 'none');
             currIdx[i].j--;
         }
     }
     if (direction === 'right') {
         for (var i = 0; i < currIdx.length; i++) {
-            renderCell('lightcoral', '.cell');
+            renderCell('lightcoral', '.cell','none');
             currIdx[i].j++;
         }
     }
     for (var i = 0; i < currIdx.length; i++) {
         gBoard[currIdx[i].i][currIdx[i].j].number = 1;
     }
-    renderCell(currentShape.color, '.cell');
+    renderCell(currentShape.color, '.cell', boxShadow);
 }
 
 function checkRows() {
     var currIdx = currentShape.indexes
     // console.log(currIdx);
     for (var i = 0; i < currIdx.length; i++) {
-        if (direction === 'down' && currIdx[i].i === gBoard.length - 19) {
+        if (direction === 'down' && currIdx[i].i === gBoard.length - 1) {
             gBoard[currIdx[i].i][currIdx[i].j].number = 0;
             for (var i = 0; i < currIdx.length; i++) {
                 gBoard[currIdx[i].i][currIdx[i].j].number = 2
@@ -331,10 +333,10 @@ function handleKey(event) {
             direction = 'right';
             movePiece()
             break;
-        // case 'ArrowUp':
-        //     direction = 'up';
-        //     rotatePieces();
-        //     break;
+        case 'ArrowUp':
+            direction = 'up';
+            rotatePieces();
+            break;
     }
 }
 
@@ -384,11 +386,13 @@ function renderCellRot(num, i, j, color) {
     elPeice.style.backgroundColor = color
 }
 
-function renderCell(color, selector) {
+function renderCell(color, selector, shadow) {
     var currIdx = currentShape.indexes;
     for (var i = 0; i < currIdx.length; i++) {
         var elPeice = document.querySelector(`${selector}${currentShape.indexes[i].i}-${currentShape.indexes[i].j}`)
         elPeice.style.backgroundColor = color
+        elPeice.style. boxShadow = shadow
+
     }
 }
 
@@ -411,7 +415,7 @@ function checkGameOver() {
 function renderNextCell(color, selector) {
     var currIdx = nextShape.indexes;
     for (var i = 0; i < currIdx.length; i++) {
-        var elPeice = document.querySelector(`${selector}${nextShape.indexes[i].i + 1}-${nextShape.indexes[i].j + 1}`)
+        var elPeice = document.querySelector(`${selector}${nextShape.indexes[i].i}-${nextShape.indexes[i].j}`)
         elPeice.style.backgroundColor = color
     }
 }
@@ -505,7 +509,6 @@ function checkTime(i) {
 }
 
 function arrowclicked(elBtn) {
-    console.log(elBtn.innerText);
     if (elBtn.innerText === '↓') {
         direction = 'down'
         movePiece()

@@ -40,7 +40,7 @@
 } */
 
 .calc-game {
-    background-color: plum;
+    background-color: lightskyblue;
     height: 100vh;
     width: 50%;
     float: right;
@@ -81,7 +81,7 @@
 }
 
 .board-game {
-    background-color: brown;
+    background-color: papayawhip;
     height: 100vh;
     width: 50%;
 }
@@ -121,6 +121,7 @@
     background-color: lightcoral;
     text-align: center;
     border: 0;
+    
 }
 
 
