@@ -9,8 +9,12 @@
 </head>
 
 <body onkeyup="handleKey(event)" onload="init()">
-    <div class="open-game">are u shur?!
-        <button class="shur" onclick="yesSure()">yes</button>
+    <div class="open">
+        <div class="open-game">
+            <h4>Are you sure you want to play this silly Tetris game?<br>
+                Please note that today there are much better games, like FIFA, Fortniit etc.</h4>
+            <button class="shur" onclick="yesSure()">Yes, I'm really bored</button>
+        </div>
     </div>
     <div class="container">
         <div class="modal"> GAME OVER </div>
@@ -21,6 +25,7 @@
                 </table>
             </div>
             <div class="score-board">
+
                 <h2>score</h2>
                 <div class="score"> <span>0</span> </div>
             </div>
@@ -39,10 +44,10 @@
                 <button class="btn-level" onclick="levelGame(this)">Level 1</button>
                 <button class="btn-level" onclick="levelGame(this)">Level 2</button>
                 <button class="btn-level" onclick="levelGame(this)">Level 3</button>
-                <button class="btn-st" onclick="startGame()">play</button>
-                <button class="btn-pu" onclick="puseGame()">puse</button>
-                <button class="btn-ke" onclick="keepGame()">keep</button>
-                <button class="reset" onclick="reset()">reset</button>
+                <button class="btn-st" onclick="startGame()">PLAY</button>
+                <button class="btn-pu" onclick="puseGame()">PUSE</button>
+                <button class="btn-ke" onclick="keepGame()">KEEP</button>
+                <button class="reset" onclick="reset()">&#8634;</button>
             </div>
         </div>
         <div class="board-game">
@@ -51,6 +56,7 @@
         </div>
     </div>
     <script src="js/main2.js"></script>
+    <script src="js/rotateCell.js"></script>
 </body>
 
 </html>

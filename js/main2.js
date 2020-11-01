@@ -9,7 +9,7 @@ var SIZE = 14;
 var shapes = [];
 var currentShape;
 var nextShape;
-var idxAndColor = []
+var idxAndColor;
 var state = 1;
 var colors = ['green', 'red', 'blue', 'yellow'];
 var move = 0;
@@ -21,6 +21,8 @@ var speed = 1000;
 var gStartTime;
 var gTime;
 var boxShadow = '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)';
+var gPressOnKeyT = 0
+var gPressOnKeyI = 0
 var I;
 var O;
 var T;
@@ -31,6 +33,7 @@ var Z;
 
 
 function init() {
+    idxAndColor = []
     gNextBoard = buildBoard(nextBoardSize, 1)
     renderBoard(gNextBoard, 'cellNext', '.next-board');
     gBoard = buildBoard(SIZE, 2);
@@ -40,6 +43,7 @@ function init() {
     clearInterval(gInterval);
     clearInterval(gTime);
     document.querySelector('.time span').innerText = '00:00';
+    gPressOnKeyT = 0;
     // createNextShape();
 }
 
@@ -113,10 +117,10 @@ function createShapes() {
         [0, 0, 0]
     ]; // 't' shape
     I = [
-        [1, 1, 1, 1],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
+        [1, 0, 0, 0],
+        [1, 0, 0, 0],
+        [1, 0, 0, 0],
+        [1, 0, 0, 0]
     ]; // line
     O = [
         [1, 1, 0],
@@ -217,7 +221,7 @@ function movePiece() {
     for (var i = 0; i < currIdx.length; i++) {
         gBoard[currIdx[i].i][currIdx[i].j].number = 0;
     }
-    if (direction === 'down') {
+    if (direction === 'down' || direction === 'up') {
         for (var i = 0; i < currIdx.length; i++) {
             renderCell('lightcoral', '.cell', 'none');
             currIdx[i].i++;
@@ -231,7 +235,7 @@ function movePiece() {
     }
     if (direction === 'right') {
         for (var i = 0; i < currIdx.length; i++) {
-            renderCell('lightcoral', '.cell','none');
+            renderCell('lightcoral', '.cell', 'none');
             currIdx[i].j++;
         }
     }
@@ -243,7 +247,6 @@ function movePiece() {
 
 function checkRows() {
     var currIdx = currentShape.indexes
-    // console.log(currIdx);
     for (var i = 0; i < currIdx.length; i++) {
         if (direction === 'down' && currIdx[i].i === gBoard.length - 1) {
             gBoard[currIdx[i].i][currIdx[i].j].number = 0;
@@ -254,7 +257,8 @@ function checkRows() {
             checkGameOver();
             if (!isOn) return;
             checkCompeitRows();
-            gPressOnKey = 0;
+            gPressOnKeyT = 0;
+            gPressOnKeyI = 0
             createShape();
             return false;
         }
@@ -266,7 +270,8 @@ function checkRows() {
             checkGameOver();
             if (!isOn) return;
             checkCompeitRows();
-            gPressOnKey = 0;
+            gPressOnKeyT = 0;
+            gPressOnKeyI = 0
             createShape();
             return false;
         }
@@ -292,9 +297,7 @@ function checkCompeitRows() {
                     renderRow(i, j);
                     updateScore(10)
                 }
-                setTimeout(() => {
-                    rowDowm(rowI)
-                }, 1000);
+                rowDowm(rowI)
             }
         }
         nums = -1;
@@ -308,18 +311,29 @@ function rowDowm(idx) {
         }
     }
     for (var i = 0; i < idxAndColor.length; i++) {
-        if (idxAndColor[i].i < idx && idxAndColor[i].i > -1) {
+        if (idxAndColor[i].i < idx && idxAndColor[i].i != -1) {
             gBoard[idxAndColor[i].i][idxAndColor[i].j].number = 0
-            renderBoardColor([i], 'lightcoral')
+            renderBoardColor([i], 'lightcoral', 'none')
+        }
+    }
+    for (var i = 0; i < idxAndColor.length; i++) {
+        if (idxAndColor[i].i < idx && idxAndColor[i].i != -1) {
             idxAndColor[i].i++
             gBoard[idxAndColor[i].i][idxAndColor[i].j].number = 2
-            renderBoardColor([i], idxAndColor[i].color);
+            renderBoardColor([i], idxAndColor[i].color, boxShadow);
         }
     }
 }
 
+function renderBoardColor(iRow, color, shadow) {
+    var elPeice = document.querySelector(`.cell${idxAndColor[iRow].i}-${idxAndColor[iRow].j}`)
+    elPeice.style.backgroundColor = color
+    elPeice.style.boxShadow = shadow
+}
+
 // Move the player by keyboard arrows
 function handleKey(event) {
+    if (!isOn) return;
     switch (event.key) {
         case 'ArrowDown':
             direction = 'down';
@@ -335,55 +349,10 @@ function handleKey(event) {
             break;
         case 'ArrowUp':
             direction = 'up';
-            rotatePieces();
+            if (currentShape.shape === T) rotatePiecesT();
+            if (currentShape.shape === I) rotatePiecesI();
             break;
     }
-}
-
-
-var gPressOnKey = 0
-function rotatePieces() {
-    var currIdx = currentShape.indexes;
-    var colors = currentShape.color;
-    if (currentShape.shape === T) {
-        if (gPressOnKey === 0) {
-            console.log(currIdx);
-            renderCellRot(0, currIdx[1].i, currIdx[1].j, 'lightcoral')
-            currIdx[1].i++
-            currIdx[1].j++
-            renderCellRot(1, currIdx[1].i, currIdx[1].j, colors)
-            console.log(currIdx);
-
-        } if (gPressOnKey === 1) {
-            renderCellRot(0, currIdx[0].i, currIdx[0].j, 'lightcoral')
-            currIdx[0].i++
-            currIdx[0].j--
-            renderCellRot(1, currIdx[0].i, currIdx[0].j, colors)
-            console.log(currIdx);
-        } if (gPressOnKey === 2) {
-            renderCellRot(0, currIdx[3].i, currIdx[3].j, 'lightcoral')
-            currIdx[3].i--
-            currIdx[3].j--
-            renderCellRot(1, currIdx[3].i, currIdx[3].j, colors)
-            console.log(currIdx);
-        } if (gPressOnKey === 3) {
-            renderCellRot(0, currIdx[1].i, currIdx[1].j, 'lightcoral')
-            currIdx[1].i--
-            currIdx[1].j++
-            renderCellRot(1, currIdx[1].i, currIdx[1].j, colors)
-            console.log(currIdx);
-        }
-        movePiece();
-    }
-    gPressOnKey++
-    console.log(gPressOnKey);
-
-}
-
-function renderCellRot(num, i, j, color) {
-    gBoard[i][j].number = num
-    var elPeice = document.querySelector(`.cell${i}-${j}`)
-    elPeice.style.backgroundColor = color
 }
 
 function renderCell(color, selector, shadow) {
@@ -391,7 +360,7 @@ function renderCell(color, selector, shadow) {
     for (var i = 0; i < currIdx.length; i++) {
         var elPeice = document.querySelector(`${selector}${currentShape.indexes[i].i}-${currentShape.indexes[i].j}`)
         elPeice.style.backgroundColor = color
-        elPeice.style. boxShadow = shadow
+        elPeice.style.boxShadow = shadow
 
     }
 }
@@ -410,8 +379,6 @@ function checkGameOver() {
 
 }
 
-
-
 function renderNextCell(color, selector) {
     var currIdx = nextShape.indexes;
     for (var i = 0; i < currIdx.length; i++) {
@@ -423,13 +390,11 @@ function renderNextCell(color, selector) {
 function renderRow(i, j) {
     var elPeice = document.querySelector(`.cell${i}-${j}`)
     elPeice.style.backgroundColor = 'lightcoral'
+    elPeice.style.boxShadow = 'none'
 }
 
 
-function renderBoardColor(iRow, color) {
-    var elPeice = document.querySelector(`.cell${idxAndColor[iRow].i}-${idxAndColor[iRow].j}`)
-    elPeice.style.backgroundColor = color
-}
+
 
 function updateScore(value) {
     var elInnerText = document.querySelector('.score span');
@@ -482,6 +447,7 @@ function reset() {
     hideBtn('.btn-pu', 'none')
     hideBtn('.btn-ke', 'none')
     hideBtn('.reset', 'none')
+    isOn = false;
 }
 
 function startTime() {
