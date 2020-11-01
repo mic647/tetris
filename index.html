@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Tetris</title>
+</head>
+
+<body onkeyup="handleKey(event)" onload="init()">
+    <div class="open-game">are u shur?!
+        <button class="shur" onclick="yesSure()">yes</button>
+    </div>
+    <div class="container">
+        <div class="modal"> GAME OVER </div>
+        <div class="calc-game">
+            <div class="next-board-contaner">
+                <h2>next shape</h2>
+                <table class="next-board">
+                </table>
+            </div>
+            <div class="score-board">
+                <h2>score</h2>
+                <div class="score"> <span>0</span> </div>
+            </div>
+            <div class="time-board">
+                <h2>time</h2>
+                <div class="time"> <span>00:00</span> </div>
+            </div>
+            <div class="arrow">
+                <button class="btn-arrow-up" onclick="arrowclicked(this)"> &#8593; </button>
+                <button class="btn-arrow" onclick="arrowclicked(this)"> &#8592; </button>
+                <button class="btn-arrow" onclick="arrowclicked(this)"> &#8595; </button>
+                <button class="btn-arrow" onclick="arrowclicked(this)">&#8594; </button>
+            </div>
+            <div class="btn-lv-st">
+                <h3>Please select a step</h3>
+                <button class="btn-level" onclick="levelGame(this)">Level 1</button>
+                <button class="btn-level" onclick="levelGame(this)">Level 2</button>
+                <button class="btn-level" onclick="levelGame(this)">Level 3</button>
+                <button class="btn-st" onclick="startGame()">play</button>
+                <button class="btn-pu" onclick="puseGame()">puse</button>
+                <button class="btn-ke" onclick="keepGame()">keep</button>
+                <button class="reset" onclick="reset()">reset</button>
+            </div>
+        </div>
+        <div class="board-game">
+            <table class="board">
+            </table>
+        </div>
+    </div>
+    <script src="js/main2.js"></script>
+</body>
+
+</html>
